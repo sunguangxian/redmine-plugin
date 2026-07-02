@@ -1,4 +1,4 @@
-class CreateReleaseWikiSyncProjectSettings < ActiveRecord::Migration[6.1]
+class CreateReleaseWikiSyncProjectSettings < ActiveRecord::Migration[5.2]
   def change
     create_table :release_wiki_sync_project_settings do |t|
       t.integer :project_id, null: false
