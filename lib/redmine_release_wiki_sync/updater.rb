@@ -160,8 +160,10 @@ module RedmineReleaseWikiSync
     end
 
     def self.extract_version(title, text, prefix)
-      h1 = text.lines.find { |line| line =~ /^h1\.\s*(.+)$/ }
-      return Regexp.last_match(1).strip if h1
+      text.lines.each do |line|
+        match = line.match(/^h1\.\s*(.+)$/)
+        return match[1].strip if match
+      end
 
       suffix = title.sub(/^#{Regexp.escape(prefix)}/, '')
       normalize_version_suffix(suffix)
