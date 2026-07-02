@@ -1,3 +1,5 @@
+require 'json'
+
 class ReleaseWikiSyncProjectSetting < ActiveRecord::Base
   MODES = %w[single_list multi_list].freeze
 
