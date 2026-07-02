@@ -1,0 +1,74 @@
+<h2>Release Wiki 同步配置</h2>
+
+<%= error_messages_for @setting %>
+
+<div class="box">
+  <p>
+    当前项目：<strong><%= h(@project.name) %></strong>
+  </p>
+  <p>
+    插件只会更新 <code>&lt;!-- RELEASE_SYNC_BEGIN --&gt;</code> 和
+    <code>&lt;!-- RELEASE_SYNC_END --&gt;</code> 之间的内容。
+  </p>
+</div>
+
+<%= form_tag project_release_wiki_sync_settings_path(@project), method: :patch do %>
+  <div class="box tabular">
+    <p>
+      <label>启用同步</label>
+      <%= hidden_field_tag 'release_wiki_sync_project_setting[enabled]', '0' %>
+      <%= check_box_tag 'release_wiki_sync_project_setting[enabled]', '1', @setting.enabled? %>
+    </p>
+
+    <p>
+      <label>同步模式</label>
+      <%= select_tag 'release_wiki_sync_project_setting[mode]',
+            options_for_select([
+              ['single_list：版本详情页 -> Release 列表页', 'single_list'],
+              ['multi_list：多个 Release 列表页 -> 主汇总页', 'multi_list']
+            ], @setting.mode) %>
+    </p>
+
+    <p>
+      <label>主 Wiki 页面</label>
+      <%= text_field_tag 'release_wiki_sync_project_setting[main_page]', @setting.main_page, size: 60 %>
+      <em class="info">例如：Release_Notes 或 Changelog_for_5X</em>
+    </p>
+
+    <p>
+      <label>版本详情页前缀</label>
+      <%= text_field_tag 'release_wiki_sync_project_setting[release_page_prefix]', @setting.release_page_prefix, size: 60 %>
+      <em class="info">single_list 使用，例如：Release_TP35_FW_</em>
+    </p>
+
+    <p>
+      <label>高级 JSON 配置</label>
+      <%= text_area_tag 'release_wiki_sync_project_setting[config_json]', @setting.config_json, cols: 100, rows: 16, class: 'wiki-edit' %>
+      <em class="info">multi_list 在这里配置 lists；single_list 一般可以留空。</em>
+    </p>
+  </div>
+
+  <%= submit_tag '保存' %>
+<% end %>
+
+<h3>single_list 示例</h3>
+<pre>{
+  "release_pages": {
+    "prefix": "Release_TP35_FW_"
+  }
+}</pre>
+
+<h3>multi_list 示例</h3>
+<pre>{
+  "lists": [
+    { "page": "Release_Notes_Regular", "label": "常规版本 (5X)" },
+    { "page": "Release_Notes_Trunking", "label": "Trunking 集群" },
+    { "page": "Release_Notes_Record", "label": "Record 录音" },
+    { "page": "Release_Notes_NP500", "label": "NP500" }
+  ]
+}</pre>
+
+<h3>Wiki 页面标记</h3>
+<pre><!-- RELEASE_SYNC_BEGIN -->
+这里由插件自动生成
+<!-- RELEASE_SYNC_END --></pre>
